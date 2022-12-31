@@ -2,8 +2,9 @@ from turtle import Turtle, Screen
 import pandas
 IMAGE = "blank_states_img.gif"
 state_data_csv = "50_states.csv"
-state_data = pandas.read_csv(state_data_csv)
-states = state_data.state
+states_data = pandas.read_csv(state_data_csv)
+states = states_data.state.to_list()
+print(states)
 screen = Screen()
 screen.title("U.S. States Game")
 screen.addshape(IMAGE)
@@ -15,16 +16,10 @@ tim.hideturtle()
 tim.penup()
 guessed_states = 0
 while guessed_states < 50:
-    user_state_guess = screen.textinput(title="State Name Input", prompt="Please input a valid state name: ").title()
-    guess_index = states[states.str.contains(user_state_guess) == True].index
-    if guess_index.nbytes > 0:
-        # print(guess_index.nbytes)
-        state_x_cor = state_data[state_data["state"].str.contains(user_state_guess) == True]["x"].to_list()[0]
-        state_y_cor = state_data[state_data["state"].str.contains(user_state_guess) == True]["y"].to_list()[0]
-        # print(f"x: {state_x_cor}\ny: {state_y_cor}")
-        tim.goto(x=state_x_cor, y=state_y_cor)
-        tim.write(user_state_guess)
+    user_guess = screen.textinput(title=f"{guessed_states}/50 Correct States", prompt="Please guess a state name:").title()
+    if user_guess in states:
+        guessed_state = states_data[states_data.state == user_guess]
+        tim.goto(x=int(guessed_state.x), y=int(guessed_state.y))
+        tim.write(user_guess)
         guessed_states += 1
-    else:
-        print(guess_index.nbytes)
 screen.exitonclick()
